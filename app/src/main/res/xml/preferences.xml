@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Preference category">
+
+        <ListPreference
+            android:defaultValue="A1"
+            android:title="List preference"
+            android:entries="@array/cursos"
+            android:entryValues="@array/cursos"
+            android:key="lista_preferences" />
+    </PreferenceCategory>
+</PreferenceScreen>

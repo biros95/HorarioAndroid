@@ -1,4 +1,4 @@
-package com.example.marcosportatil.horarioandroid;
+package com.example.marcosportatil.horarioandroid.Bd;
 
 import android.provider.BaseColumns;
 

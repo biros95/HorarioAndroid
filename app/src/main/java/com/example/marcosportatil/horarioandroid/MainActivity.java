@@ -1,18 +1,23 @@
 package com.example.marcosportatil.horarioandroid;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.marcosportatil.horarioandroid.Prefencias.PreferencesActivity;
+
 import java.util.Calendar;
 import java.util.HashMap;
+
+import com.example.marcosportatil.horarioandroid.Bd.AsignaturaColumnas;
+import com.example.marcosportatil.horarioandroid.Bd.HorarioDbHelper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,11 +27,9 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<String, String> miMapa;
 
 
-
-
     Calendar c = Calendar.getInstance();
     int dia = c.get(Calendar.DAY_OF_WEEK);
-    String hora = "'"+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE)+"'";
+    String hora = "'" + c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE) + "'";
 
     private SQLiteDatabase db;
 
@@ -42,10 +45,7 @@ public class MainActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_settings:
-                Intent returnIntent = new Intent();
-                returnIntent.putExtra("mostrarPreferencies",true);
-                setResult(Activity.RESULT_OK,returnIntent);
-                finish();
+                iniciarPreferences();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -59,14 +59,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-
-
         //Obtenemos las referencias a los controles
 
-        txtResultado = (TextView)findViewById(R.id.txtResultado);
+        txtResultado = (TextView) findViewById(R.id.txtResultado);
 
         miMapa = new HashMap<>();
-        CrearMapa();
+        crearMapa();
 
 
         //Abrimos la base de datos 'DBUsuarios' en modo escritura
@@ -76,8 +74,9 @@ public class MainActivity extends AppCompatActivity {
         db = usdbh.getWritableDatabase();
 
         //Alternativa 1: m�todo rawQuery()
-        Cursor c = db.rawQuery("SELECT * FROM "+ AsignaturaColumnas.AsignaturaColumna.TABLE_NAME
-                + " WHERE "+dia +" LIKE diaSemana AND "+hora+" BETWEEN hora_Inicio AND hora_Final", null);
+        Cursor c = db.rawQuery("SELECT * FROM " + AsignaturaColumnas.AsignaturaColumna.TABLE_NAME
+                + " WHERE " + dia + " LIKE diaSemana AND " + hora + " BETWEEN hora_Inicio AND hora_Final AND (grupo = "
+                +recuperarDatos() +" OR grupo = 0 )", null);
 
 
         //Recorremos los resultados para mostrarlos en pantalla
@@ -89,8 +88,8 @@ public class MainActivity extends AppCompatActivity {
                 String nom = c.getString(1);
                 String codigo = c.getString(2);
 
-                txtResultado.append(" " + cod + " - " + nom + miMapa.get(codigo) + "\n");
-            } while(c.moveToNext());
+                txtResultado.append("Ahora toca: "+miMapa.get(codigo) + "\n");
+            } while (c.moveToNext());
         }
 
 
@@ -98,7 +97,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    public void CrearMapa() {
+
+    private void iniciarPreferences() {
+        startActivity(new Intent(this, PreferencesActivity.class));
+    }
+
+
+    public void crearMapa() {
         miMapa.put("7", "M7- Desenvolupament d'interficies (A201) José Antonio Leo");
         miMapa.put("11", "Tutoria  (A201) Josefa González");
         miMapa.put("3", "M3- Programació básica (A201)/(A208) Josefa Gónzalez");
@@ -108,5 +113,20 @@ public class MainActivity extends AppCompatActivity {
         miMapa.put("5", "M5- Entorns de desenvolupament / Bases de dades / Accés a dades A201)/(A208) Jorge Rubio");
 
     }
+
+    public int recuperarDatos() {
+        SharedPreferences s = PreferenceManager.getDefaultSharedPreferences(this);
+        String grupo = s.getString("lista_preferences", "A1");
+        //return grupo.equals("A1") ? 1 : grupo.equals("A2") ? 2 : 0;
+        if(grupo == "A1"){
+            return 1;
+        }
+        else if (grupo == "A2"){
+            return 2;
+        }
+        else
+            return 0;
+    }
+
 }
 

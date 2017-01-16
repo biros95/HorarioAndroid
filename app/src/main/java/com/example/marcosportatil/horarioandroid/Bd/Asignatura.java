@@ -1,4 +1,4 @@
-package com.example.marcosportatil.horarioandroid;
+package com.example.marcosportatil.horarioandroid.Bd;
 
 /**
  * Created by Marcos on 06/01/2017.

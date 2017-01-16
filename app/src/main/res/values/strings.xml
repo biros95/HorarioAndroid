@@ -28,4 +28,5 @@
     <string name="color_de_fons">Color de fons</string>
     <string name="font_de_text">Font de text</string>
     <string name="anar_al_horari">Anar al horari</string>
+    <string name="title_activity_preferences">PreferencesActivity</string>
 </resources>

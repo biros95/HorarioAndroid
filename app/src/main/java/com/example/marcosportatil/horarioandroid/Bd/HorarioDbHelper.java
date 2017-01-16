@@ -1,4 +1,4 @@
-package com.example.marcosportatil.horarioandroid;
+package com.example.marcosportatil.horarioandroid.Bd;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
